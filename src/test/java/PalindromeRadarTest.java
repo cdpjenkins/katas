@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static java.util.stream.Collectors.joining;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -31,21 +31,30 @@ public class PalindromeRadarTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @ValueSource(strings = {
             "race car1",
             "Hello, World1"
     })
     void non_plindrome_is_recognised_as_such_even_after_non_alphanumeric_characters_are_ignored(String input) {
         assertThat(palindromeRadar.isPalindrome(input), is(false));
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Race car",
+            "A man, a plan, a canal, Panama!"
+    })
+    void differences_in_case_are_ignored(String input) {
+        assertThat(palindromeRadar.isPalindrome(input), is(true));
+    }
 }
 
 class PalindromeRadar {
-
     public boolean isPalindrome(String input) {
         String alphaNumericInput = filterAlphanumeric(input);
+        String lowerCaseInput = alphaNumericInput.toLowerCase();
 
-        return alphaNumericInput.equals(reverse(alphaNumericInput));
+        return lowerCaseInput.equals(reverse(lowerCaseInput));
     }
 
     private static String filterAlphanumeric(String input) {
