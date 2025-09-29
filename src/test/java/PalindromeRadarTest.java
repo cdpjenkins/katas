@@ -51,17 +51,15 @@ public class PalindromeRadarTest {
 
 class PalindromeRadar {
     public boolean isPalindrome(String input) {
-        String alphaNumericInput = filterAlphanumeric(input);
-        String lowerCaseInput = alphaNumericInput.toLowerCase();
-
-        return lowerCaseInput.equals(reverse(lowerCaseInput));
+        String normalisedInput = normalise(input);
+        return normalisedInput.equals(reverse(normalisedInput));
     }
 
-    private static String filterAlphanumeric(String input) {
-        return input.replaceAll("[^a-zA-Z0-9]", "");
+    private static String reverse(String normalisedInput) {
+        return new StringBuilder(normalisedInput).reverse().toString();
     }
 
-    private static String reverse(String input) {
-        return new StringBuilder(input).reverse().toString();
+    private static String normalise(String input) {
+        return input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
     }
 }
