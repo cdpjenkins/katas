@@ -1,6 +1,8 @@
 package com.cdpjenkins.katas.fizzbuzz;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -44,19 +46,12 @@ public class FizzBuzzTest {
         assertThat(fizzBuzz.convert(15), is("FizzBuzz"));
     }
 
-    @Test
-    void throws_IllegalArguementException_when_input_is_zero() {
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void throws_IllegalArguementException_when_input_is_not_positive(int input) {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> fizzBuzz.convert(0)
-        );
-    }
-
-    @Test
-    void throws_IllegalArguementException_when_input_is_negative() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> fizzBuzz.convert(-1)
+                () -> fizzBuzz.convert(input)
         );
     }
 }
