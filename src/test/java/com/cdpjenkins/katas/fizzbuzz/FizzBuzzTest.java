@@ -32,13 +32,18 @@ public class FizzBuzzTest {
     void converts_6_to_Fizz() {
         assertThat(fizzBuzz.convert(6), is("Fizz"));
     }
+
+    @Test
+    void converts_10_to_Buzz() {
+        assertThat(fizzBuzz.convert(10), is("Buzz"));
+    }
 }
 
 class FizzBuzz {
     public String convert(int number) {
         if (number % 3 == 0) {
             return "Fizz";
-        } else if (number == 5) {
+        } else if (number % 5 == 0) {
             return "Buzz";
         } else {
             return Integer.toString(number);
