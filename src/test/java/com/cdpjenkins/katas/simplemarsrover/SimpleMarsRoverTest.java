@@ -26,19 +26,29 @@ public class SimpleMarsRoverTest {
     void rover_wraps_around_when_we_reach_the_top_of_the_grid() {
         assertThat(MarsRover.execute("MMMMMMMMMM"), is("0:0:N"));
     }
+
+    @Test
+    void rover_direction_changes_when_it_turns_left() {
+        assertThat(MarsRover.execute("L"), is("0:0:W"));
+    }
 }
 
 class MarsRover {
     public static String execute(String commands) {
+        char direction = 'N';
         int y = 0;
 
         for (char command : commands.toCharArray()) {
-            y++;
-            if (y >= 10) {
-                y = 0;
+            if (command == 'M') {
+                y++;
+                if (y >= 10) {
+                    y = 0;
+                }
+            } else {
+                direction = 'W';
             }
         }
 
-        return String.format("0:%d:N", y);
+        return String.format("0:%d:%c", y, direction);
     }
 }
