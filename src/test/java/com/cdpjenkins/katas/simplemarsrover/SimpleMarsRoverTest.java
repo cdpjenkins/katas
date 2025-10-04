@@ -196,9 +196,8 @@ enum Command {
     MOVE {
         @Override
         MarsRover execute(MarsRover marsRover) {
-            Direction direction = marsRover.direction();
-            Position wrappedPosition = direction.move(marsRover.position()).wrap(9);
-            return new MarsRover(wrappedPosition, direction);
+            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(9);
+            return new MarsRover(wrappedPosition, marsRover.direction());
         }
     },
     TURN_LEFT {
@@ -228,15 +227,14 @@ enum Command {
 
 class MarsRoverExecutor {
     public static String execute(String commands) {
-        MarsRover marsRover = new MarsRover(new Position(0, 0), Direction.NORTH);
-
-        for (char c : commands.toCharArray()) {
-            Command command = Command.fromChar(c);
-
-            marsRover = command.execute(marsRover);
-        }
-
-        return marsRover.asString();
+        return commands.chars()
+                .mapToObj(c -> Command.fromChar((char) c))
+                .toList()
+                .stream()
+                .reduce(new MarsRover(new Position(0, 0), Direction.NORTH),
+                        (rover, command) -> command.execute(rover),
+                        (rover1, rover2) -> rover2
+                ).asString();
     }
 
 }
