@@ -10,10 +10,15 @@ public class FizzBuzzTest {
     void converts_1_to_1() {
         assertThat(new FizzBuzz().convert(1), Matchers.is("1"));
     }
+
+    @Test
+    void converts_2_to_2() {
+        assertThat(new FizzBuzz().convert(2), Matchers.is("2"));
+    }
 }
 
 class FizzBuzz {
-    public String convert(int i) {
-        return "1";
+    public String convert(int number) {
+        return Integer.toString(number);
     }
 }
