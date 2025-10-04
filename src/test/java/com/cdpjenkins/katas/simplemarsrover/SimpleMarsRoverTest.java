@@ -33,11 +33,6 @@ public class SimpleMarsRoverTest {
     }
 
     @Test
-    void rover_faces_east_after_turning_right() {
-        assertThat(MarsRover.execute("R"), is("0:0:E"));
-    }
-
-    @Test
     void rover_faces_south_after_turning_left_twice() {
         assertThat(MarsRover.execute("LL"), is("0:0:S"));
     }
@@ -50,6 +45,16 @@ public class SimpleMarsRoverTest {
     @Test
     void rover_faces_north_again_after_turning_left_fourth_times() {
         assertThat(MarsRover.execute("LLLL"), is("0:0:N"));
+    }
+
+    @Test
+    void rover_faces_east_after_turning_right() {
+        assertThat(MarsRover.execute("R"), is("0:0:E"));
+    }
+
+    @Test
+    void rover_faces_south_after_turning_right_twice() {
+        assertThat(MarsRover.execute("RR"), is("0:0:S"));
     }
 }
 
@@ -73,7 +78,11 @@ class MarsRover {
                     default -> direction;
                 };
             } else if (command == 'R') {
-                direction = 'E';
+                direction = switch (direction) {
+                    case 'N' -> 'E';
+                    case 'E' -> 'S';
+                    default -> direction;
+                };
             }
         }
 
