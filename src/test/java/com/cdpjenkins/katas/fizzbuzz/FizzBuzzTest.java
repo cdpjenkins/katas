@@ -23,14 +23,10 @@ public class FizzBuzzTest {
         assertThat(fizzBuzz.convert(input), is("Fizz"));
     }
 
-    @Test
-    void converts_5_to_Buzz() {
-        assertThat(fizzBuzz.convert(5), is("Buzz"));
-    }
-
-    @Test
-    void converts_10_to_Buzz() {
-        assertThat(fizzBuzz.convert(10), is("Buzz"));
+    @ParameterizedTest
+    @ValueSource(ints = {5, 10, 20, 25, 35, 40})
+    void converts_number_that_is_divisible_by_5_but_not_by_3_to_Buzz(int input) {
+        assertThat(fizzBuzz.convert(input), is("Buzz"));
     }
 
     @Test
