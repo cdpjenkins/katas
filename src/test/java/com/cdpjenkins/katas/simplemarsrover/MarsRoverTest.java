@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class SimpleMarsRoverTest {
+public class MarsRoverTest {
 
     @Test
     void rover_starts_at_position_0_0_facing_north() {
