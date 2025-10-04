@@ -106,7 +106,11 @@ record Position(int x, int y) {
     }
 }
 
-record MarsRover(Position position, Direction direction) { }
+record MarsRover(Position position, Direction direction) {
+    String asString() {
+        return String.format("%d:%d:%c", position().x(), position().y(), direction().toChar());
+    }
+}
 
 enum Direction {
     NORTH {
@@ -232,7 +236,7 @@ class MarsRoverExecutor {
             marsRover = command.execute(marsRover);
         }
 
-        return String.format("%d:%d:%c", marsRover.position().x(), marsRover.position().y(), marsRover.direction().toChar());
+        return marsRover.asString();
     }
 
 }
