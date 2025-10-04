@@ -100,7 +100,13 @@ public class SimpleMarsRoverTest {
     }
 }
 
-record MarsRover(int x, int y, Direction direction) { }
+record Position(int x, int y) {
+    public Position wrap(int gridSize) {
+        return new Position(x % gridSize, y % gridSize);
+    }
+}
+
+record MarsRover(Position position, Direction direction) { }
 
 enum Direction {
     NORTH {
@@ -113,6 +119,11 @@ enum Direction {
         Direction turnRight() {
             return EAST;
         }
+
+        @Override
+        Position move(Position position) {
+            return new Position(position.x(), position.y() - 1);
+        }
     },
     EAST {
         @Override
@@ -123,6 +134,11 @@ enum Direction {
         @Override
         Direction turnRight() {
             return SOUTH;
+        }
+
+        @Override
+        Position move(Position position) {
+            return new Position(position.x() + 1, position.y());
         }
     },
     SOUTH {
@@ -135,6 +151,11 @@ enum Direction {
         Direction turnRight() {
             return WEST;
         }
+
+        @Override
+        Position move(Position position) {
+            return new Position(position.x(), position.y() + 1);
+        }
     },
     WEST {
         @Override
@@ -146,10 +167,16 @@ enum Direction {
         Direction turnRight() {
             return NORTH;
         }
+
+        @Override
+        Position move(Position position) {
+            return new Position(position.x() - 1, position.y());
+        }
     };
 
     abstract Direction turnLeft();
     abstract Direction turnRight();
+    abstract Position move(Position position);
 
     char toChar() {
         return switch (this) {
@@ -165,49 +192,21 @@ enum Command {
     MOVE {
         @Override
         MarsRover execute(MarsRover marsRover) {
-            int x = marsRover.x();
-            int y = marsRover.y();
-
-            switch (marsRover.direction()) {
-                case NORTH -> {
-                    y++;
-                    if (y >= 10) {
-                        y = 0;
-                    }
-                }
-                case EAST -> {
-                    x++;
-                    if (x >= 10) {
-                        x = 0;
-                    }
-                }
-                case SOUTH -> {
-                    y--;
-                    if (y < 0) {
-                        y = 9;
-                    }
-                }
-                case WEST -> {
-                    x--;
-                    if (x < 0) {
-                        x = 9;
-                    }
-                }
-            }
-
-            return new MarsRover(x, y, marsRover.direction());
+            Direction direction = marsRover.direction();
+            Position wrappedPosition = direction.move(marsRover.position()).wrap(9);
+            return new MarsRover(wrappedPosition, direction);
         }
     },
     TURN_LEFT {
         @Override
         MarsRover execute(MarsRover marsRover) {
-            return new MarsRover(marsRover.x(), marsRover.y(), marsRover.direction().turnLeft());
+            return new MarsRover(marsRover.position(), marsRover.direction().turnLeft());
         }
     },
     TURN_RIGHT {
         @Override
         MarsRover execute(MarsRover marsRover) {
-            return new MarsRover(marsRover.x(), marsRover.y(), marsRover.direction().turnRight());
+            return new MarsRover(marsRover.position(), marsRover.direction().turnRight());
         }
     };
 
@@ -225,7 +224,7 @@ enum Command {
 
 class MarsRoverExecutor {
     public static String execute(String commands) {
-        MarsRover marsRover = new MarsRover(0, 0, Direction.NORTH);
+        MarsRover marsRover = new MarsRover(new Position(0, 0), Direction.NORTH);
 
         for (char c : commands.toCharArray()) {
             Command command = Command.fromChar(c);
@@ -233,7 +232,7 @@ class MarsRoverExecutor {
             marsRover = command.execute(marsRover);
         }
 
-        return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), marsRover.direction().toChar());
+        return String.format("%d:%d:%c", marsRover.position().x(), marsRover.position().y(), marsRover.direction().toChar());
     }
 
 }
