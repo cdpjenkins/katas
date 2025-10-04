@@ -102,7 +102,11 @@ public class MarsRoverTest {
 
 record Position(int x, int y) {
     public Position wrap(int gridSize) {
-        return new Position(x % gridSize, y % gridSize);
+        return new Position(mod(x, gridSize), mod(y, gridSize));
+    }
+
+    private int mod(int a, int n) {
+        return ((a % n) + n) % n;
     }
 }
 
@@ -126,7 +130,7 @@ enum Direction {
 
         @Override
         Position move(Position position) {
-            return new Position(position.x(), position.y() - 1);
+            return new Position(position.x(), position.y() + 1);
         }
     },
     EAST {
@@ -158,7 +162,7 @@ enum Direction {
 
         @Override
         Position move(Position position) {
-            return new Position(position.x(), position.y() + 1);
+            return new Position(position.x(), position.y() - 1);
         }
     },
     WEST {
@@ -196,7 +200,7 @@ enum Command {
     MOVE {
         @Override
         MarsRover execute(MarsRover marsRover) {
-            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(9);
+            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(10);
             return new MarsRover(wrappedPosition, marsRover.direction());
         }
     },
