@@ -100,7 +100,7 @@ public class SimpleMarsRoverTest {
     }
 }
 
-record MarsRover(int x, int y) { }
+record MarsRover(int x, int y, Direction direction) { }
 
 enum Direction {
     NORTH {
@@ -180,26 +180,26 @@ class MarsRoverExecutor {
     public static String execute(String commands) {
         Direction direction = Direction.NORTH;
 
-        MarsRover marsRover = new MarsRover(0, 0);
+        MarsRover marsRover = new MarsRover(0, 0, direction);
 
         for (char c : commands.toCharArray()) {
             Command command = Command.fromChar(c);
 
             switch (command) {
-                case MOVE -> marsRover = move(marsRover, direction);
-                case TURN_LEFT -> direction = direction.turnLeft();
-                case TURN_RIGHT -> direction = direction.turnRight();
+                case MOVE -> marsRover = move(marsRover);
+                case TURN_LEFT -> marsRover = new MarsRover(marsRover.x(), marsRover.y(), direction = direction.turnLeft());
+                case TURN_RIGHT -> marsRover = new MarsRover(marsRover.x(), marsRover.y(), direction = direction.turnRight());
             }
         }
 
         return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), direction.toChar());
     }
 
-    private static MarsRover move(MarsRover marsRover, Direction direction) {
+    private static MarsRover move(MarsRover marsRover) {
         int x = marsRover.x();
         int y = marsRover.y();
 
-        switch (direction) {
+        switch (marsRover.direction()) {
             case NORTH -> {
                 y++;
                 if (y >= 10) {
@@ -226,7 +226,7 @@ class MarsRoverExecutor {
             }
         }
 
-        marsRover = new MarsRover(x, y);
+        marsRover = new MarsRover(x, y, marsRover.direction());
         return marsRover;
     }
 }
