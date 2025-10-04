@@ -17,19 +17,15 @@ public class FizzBuzzTest {
         assertThat(fizzBuzz.convert(input), is(input + ""));
     }
 
-    @Test
-    void converts_3_to_Fizz() {
-        assertThat(fizzBuzz.convert(3), is("Fizz"));
+    @ParameterizedTest
+    @ValueSource(ints = {3, 6, 9, 12, 18, 21})
+    void converts_number_that_is_divisible_by_3_but_not_by_5_to_Fizz(int input) {
+        assertThat(fizzBuzz.convert(input), is("Fizz"));
     }
 
     @Test
     void converts_5_to_Buzz() {
         assertThat(fizzBuzz.convert(5), is("Buzz"));
-    }
-
-    @Test
-    void converts_6_to_Fizz() {
-        assertThat(fizzBuzz.convert(6), is("Fizz"));
     }
 
     @Test
