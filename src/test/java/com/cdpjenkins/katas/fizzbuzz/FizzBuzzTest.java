@@ -1,6 +1,5 @@
 package com.cdpjenkins.katas.fizzbuzz;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -29,9 +28,10 @@ public class FizzBuzzTest {
         assertThat(fizzBuzz.convert(input), is("Buzz"));
     }
 
-    @Test
-    void converts_15_to_FizzBuzz() {
-        assertThat(fizzBuzz.convert(15), is("FizzBuzz"));
+    @ParameterizedTest
+    @ValueSource(ints = {15, 30, 45, 60, 75, 90})
+    void converts_number_that_is_divisible_by_both_3_and_5_to_FizzBuzz(int input) {
+        assertThat(fizzBuzz.convert(input), is("FizzBuzz"));
     }
 
     @ParameterizedTest
