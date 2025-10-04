@@ -102,13 +102,17 @@ public class MarsRoverTest {
     }
 
     @Test
-    void rover_reports_when_it_hits_an_obstacle() {
-        String commands = "M";
+    void rover_stops_when_it_hits_an_obstacle_and_reports_that_it_is_stuck() {
+        assertThat(MarsRoverExecutor.execute("M", gridWithObstacleAt(0, 1)), is("O:0:0:N"));
+    }
 
-        Set<Position> obstacles = Set.of(new Position(0, 1));
-        Grid grid = new Grid(10, 10, obstacles);
+    @Test
+    void rover_is_forever_stuck_when_it_hits_an_obstacle_and_does_not_move_again() {
+        assertThat(MarsRoverExecutor.execute("MMMLMMM", gridWithObstacleAt(0, 1)), is("O:0:0:N"));
+    }
 
-        assertThat(MarsRoverExecutor.execute(commands, grid), is("O:0:0:N"));
+    private static Grid gridWithObstacleAt(int x, int y) {
+        return new Grid(10, 10, Set.of(new Position(x, y)));
     }
 }
 
@@ -135,7 +139,11 @@ record MarsRover(Position position, Direction direction, boolean stuck) {
     }
 
     static MarsRover executeCommand(MarsRover rover, Command command, Grid grid) {
-        return command.execute(rover, grid);
+        if (!rover.stuck) {
+            return command.execute(rover, grid);
+        } else {
+            return rover;
+        }
     }
 
     String asString() {
@@ -276,13 +284,10 @@ class MarsRoverExecutor {
 
     public static String execute(String commands, Grid grid) {
         return commands.chars()
-                .mapToObj(c -> Command.fromChar((char) c))
-                .toList()
-                .stream()
+                .mapToObj(c -> Command.fromChar((char) c)).toList().stream()
                 .reduce(new MarsRover(new Position(0, 0), Direction.NORTH),
                         (rover, command) -> MarsRover.executeCommand(rover, command, grid),
                         (rover1, rover2) -> rover2
                 ).asString();
     }
-
 }
