@@ -35,7 +35,7 @@ public class FizzBuzzTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, -1})
+    @ValueSource(ints = {0, -1, -2, -3, -10000000, Integer.MIN_VALUE})
     void throws_IllegalArguementException_when_input_is_not_positive(int input) {
         assertThrows(
                 IllegalArgumentException.class,
