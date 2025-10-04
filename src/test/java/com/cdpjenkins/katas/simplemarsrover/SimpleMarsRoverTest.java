@@ -162,9 +162,56 @@ enum Direction {
 }
 
 enum Command {
-    MOVE,
-    TURN_LEFT,
-    TURN_RIGHT;
+    MOVE {
+        @Override
+        MarsRover execute(MarsRover marsRover) {
+            int x = marsRover.x();
+            int y = marsRover.y();
+
+            switch (marsRover.direction()) {
+                case NORTH -> {
+                    y++;
+                    if (y >= 10) {
+                        y = 0;
+                    }
+                }
+                case EAST -> {
+                    x++;
+                    if (x >= 10) {
+                        x = 0;
+                    }
+                }
+                case SOUTH -> {
+                    y--;
+                    if (y < 0) {
+                        y = 9;
+                    }
+                }
+                case WEST -> {
+                    x--;
+                    if (x < 0) {
+                        x = 9;
+                    }
+                }
+            }
+
+            return new MarsRover(x, y, marsRover.direction());
+        }
+    },
+    TURN_LEFT {
+        @Override
+        MarsRover execute(MarsRover marsRover) {
+            return new MarsRover(marsRover.x(), marsRover.y(), marsRover.direction().turnLeft());
+        }
+    },
+    TURN_RIGHT {
+        @Override
+        MarsRover execute(MarsRover marsRover) {
+            return new MarsRover(marsRover.x(), marsRover.y(), marsRover.direction().turnRight());
+        }
+    };
+
+    abstract MarsRover execute(MarsRover marsRover);
 
     static Command fromChar(char c) {
         return switch (c) {
@@ -178,55 +225,15 @@ enum Command {
 
 class MarsRoverExecutor {
     public static String execute(String commands) {
-        Direction direction = Direction.NORTH;
-
-        MarsRover marsRover = new MarsRover(0, 0, direction);
+        MarsRover marsRover = new MarsRover(0, 0, Direction.NORTH);
 
         for (char c : commands.toCharArray()) {
             Command command = Command.fromChar(c);
 
-            switch (command) {
-                case MOVE -> marsRover = move(marsRover);
-                case TURN_LEFT -> marsRover = new MarsRover(marsRover.x(), marsRover.y(), direction = direction.turnLeft());
-                case TURN_RIGHT -> marsRover = new MarsRover(marsRover.x(), marsRover.y(), direction = direction.turnRight());
-            }
+            marsRover = command.execute(marsRover);
         }
 
-        return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), direction.toChar());
+        return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), marsRover.direction().toChar());
     }
 
-    private static MarsRover move(MarsRover marsRover) {
-        int x = marsRover.x();
-        int y = marsRover.y();
-
-        switch (marsRover.direction()) {
-            case NORTH -> {
-                y++;
-                if (y >= 10) {
-                    y = 0;
-                }
-            }
-            case EAST -> {
-                x++;
-                if (x >= 10) {
-                    x = 0;
-                }
-            }
-            case SOUTH -> {
-                y--;
-                if (y < 0) {
-                    y = 9;
-                }
-            }
-            case WEST -> {
-                x--;
-                if (x < 0) {
-                    x = 9;
-                }
-            }
-        }
-
-        marsRover = new MarsRover(x, y, marsRover.direction());
-        return marsRover;
-    }
 }
