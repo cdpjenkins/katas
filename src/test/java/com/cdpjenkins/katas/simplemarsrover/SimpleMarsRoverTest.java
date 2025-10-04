@@ -16,13 +16,18 @@ public class SimpleMarsRoverTest {
     void y_coord_is_incremented_by_1_when_we_move_north() {
         assertThat(MarsRover.execute("M"), is("0:1:N"));
     }
+
+    @Test
+    void y_coord_is_incremented_by_2_when_we_move_north_twice() {
+        assertThat(MarsRover.execute("MM"), is("0:2:N"));
+    }
 }
 
 class MarsRover {
-    public static String execute(String command) {
+    public static String execute(String commands) {
         int y = 0;
 
-        if (!command.isEmpty()) {
+        for (char command : commands.toCharArray()) {
             y++;
         }
 
