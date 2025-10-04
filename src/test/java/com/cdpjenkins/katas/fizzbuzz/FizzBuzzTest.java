@@ -11,14 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FizzBuzzTest {
     FizzBuzz fizzBuzz = new FizzBuzz();
 
-    @Test
-    void converts_1_to_1() {
-        assertThat(fizzBuzz.convert(1), is("1"));
-    }
-
-    @Test
-    void converts_2_to_2() {
-        assertThat(fizzBuzz.convert(2), is("2"));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 4, 7, 8})
+    void converts_number_that_is_not_divisible_by_3_or_5_to_string_representation_of_that_number(int input) {
+        assertThat(fizzBuzz.convert(input), is(input + ""));
     }
 
     @Test
