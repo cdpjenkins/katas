@@ -103,10 +103,53 @@ public class SimpleMarsRoverTest {
 record MarsRover(int x, int y) { }
 
 enum Direction {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST;
+    NORTH {
+        @Override
+        Direction turnLeft() {
+            return WEST;
+        }
+
+        @Override
+        Direction turnRight() {
+            return EAST;
+        }
+    },
+    EAST {
+        @Override
+        Direction turnLeft() {
+            return NORTH;
+        }
+
+        @Override
+        Direction turnRight() {
+            return SOUTH;
+        }
+    },
+    SOUTH {
+        @Override
+        Direction turnLeft() {
+            return EAST;
+        }
+
+        @Override
+        Direction turnRight() {
+            return WEST;
+        }
+    },
+    WEST {
+        @Override
+        Direction turnLeft() {
+            return SOUTH;
+        }
+
+        @Override
+        Direction turnRight() {
+            return NORTH;
+        }
+    };
+
+    abstract Direction turnLeft();
+    abstract Direction turnRight();
 
     char toChar() {
         return switch (this) {
@@ -140,23 +183,12 @@ class MarsRoverExecutor {
         MarsRover marsRover = new MarsRover(0, 0);
 
         for (char c : commands.toCharArray()) {
-
             Command command = Command.fromChar(c);
 
             switch (command) {
                 case MOVE -> marsRover = move(marsRover, direction);
-                case TURN_LEFT -> direction = switch (direction) {
-                    case Direction.NORTH -> Direction.WEST;
-                    case Direction.WEST  -> Direction.SOUTH;
-                    case Direction.SOUTH -> Direction.EAST;
-                    case Direction.EAST  -> Direction.NORTH;
-                };
-                case TURN_RIGHT -> direction = switch (direction) {
-                    case Direction.NORTH -> Direction.EAST;
-                    case Direction.EAST -> Direction.SOUTH;
-                    case Direction.SOUTH -> Direction.WEST;
-                    case Direction.WEST -> Direction.NORTH;
-                };
+                case TURN_LEFT -> direction = direction.turnLeft();
+                case TURN_RIGHT -> direction = direction.turnRight();
             }
         }
 
