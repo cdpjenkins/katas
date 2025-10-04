@@ -101,15 +101,15 @@ public class MarsRoverTest {
         assertThat(MarsRoverExecutor.execute(commands), is(finalState));
     }
 
-//    @Test
-//    void rover_reports_when_it_hits_an_obstacle() {
-//        String commands = "M";
-//
-//        Set<Position> obstacles = Set.of(new Position(0, 1));
-//        new Grid(10, 10, obstacles);
-//
-//        MarsRoverExecutor.execute(commands);
-//    }
+    @Test
+    void rover_reports_when_it_hits_an_obstacle() {
+        String commands = "M";
+
+        Set<Position> obstacles = Set.of(new Position(0, 1));
+        Grid grid = new Grid(10, 10, obstacles);
+
+        assertThat(MarsRoverExecutor.execute(commands, grid), is("O:0:0:N"));
+    }
 }
 
 record Grid(int width, int height, Set<Position> obstacles) {
@@ -128,9 +128,24 @@ record Position(int x, int y) {
     }
 }
 
-record MarsRover(Position position, Direction direction) {
+record MarsRover(Position position, Direction direction, boolean stuck) {
+
+    public MarsRover(Position position, Direction direction) {
+        this(position, direction, false);
+    }
+
+    static MarsRover executeCommand(MarsRover rover, Command command, Grid grid) {
+        return command.execute(rover, grid);
+    }
+
     String asString() {
-        return String.format("%d:%d:%c", position().x(), position().y(), direction().toChar());
+        String representationOfPositionAndDirection = String.format("%d:%d:%c", position().x(), position().y(), direction().toChar());
+
+        if (stuck) {
+            return "O:" + representationOfPositionAndDirection;
+        } else {
+            return representationOfPositionAndDirection;
+        }
     }
 }
 
@@ -218,8 +233,13 @@ enum Command {
     MOVE {
         @Override
         MarsRover execute(MarsRover marsRover, Grid grid) {
-            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(grid);
-            return new MarsRover(wrappedPosition, marsRover.direction());
+            Position nextPosition = marsRover.direction().move(marsRover.position()).wrap(grid);
+
+            if (grid.obstacles().contains(nextPosition)) {
+                return new MarsRover(marsRover.position(), marsRover.direction(), true);
+            } else {
+                return new MarsRover(nextPosition, marsRover.direction());
+            }
         }
     },
     TURN_LEFT {
@@ -248,15 +268,19 @@ enum Command {
 }
 
 class MarsRoverExecutor {
-    public static String execute(String commands) {
-        Grid grid = new Grid(10, 10);
+    private static final Grid gridWithNoObstacles = new Grid(10, 10);
 
+    public static String execute(String commands) {
+        return execute(commands, gridWithNoObstacles);
+    }
+
+    public static String execute(String commands, Grid grid) {
         return commands.chars()
                 .mapToObj(c -> Command.fromChar((char) c))
                 .toList()
                 .stream()
                 .reduce(new MarsRover(new Position(0, 0), Direction.NORTH),
-                        (rover, command) -> command.execute(rover, grid),
+                        (rover, command) -> MarsRover.executeCommand(rover, command, grid),
                         (rover1, rover2) -> rover2
                 ).asString();
     }
