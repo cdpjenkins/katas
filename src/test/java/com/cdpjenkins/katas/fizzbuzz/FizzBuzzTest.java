@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FizzBuzzTest {
     FizzBuzz fizzBuzz = new FizzBuzz();
@@ -42,11 +43,21 @@ public class FizzBuzzTest {
     void converts_15_to_FizzBuzz() {
         assertThat(fizzBuzz.convert(15), is("FizzBuzz"));
     }
+
+    @Test
+    void throws_IllegalArguementException_when_input_is_not_positive() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> fizzBuzz.convert(0)
+        );
+    }
 }
 
 class FizzBuzz {
     public String convert(int number) {
-        if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
+        if (number == 0) {
+            throw new IllegalArgumentException("Input must be positive");
+        } else if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
             return "FizzBuzz";
         } else if (isDivisibleBy(number, 3)) {
             return "Fizz";
