@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Set;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -98,9 +100,23 @@ public class MarsRoverTest {
     void rover_moves_correctly_when_given_more_complex_commands(String commands, String finalState) {
         assertThat(MarsRoverExecutor.execute(commands), is(finalState));
     }
+
+//    @Test
+//    void rover_reports_when_it_hits_an_obstacle() {
+//        String commands = "M";
+//
+//        Set<Position> obstacles = Set.of(new Position(0, 1));
+//        new Grid(10, 10, obstacles);
+//
+//        MarsRoverExecutor.execute(commands);
+//    }
 }
 
-record Grid(int width, int height) {}
+record Grid(int width, int height, Set<Position> obstacles) {
+    public Grid(int width, int height) {
+        this(width, height, Set.of());
+    }
+}
 
 record Position(int x, int y) {
     public Position wrap(Grid grid) {
