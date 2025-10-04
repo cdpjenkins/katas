@@ -41,6 +41,11 @@ public class SimpleMarsRoverTest {
     void rover_faces_south_after_turning_left_twice() {
         assertThat(MarsRover.execute("LL"), is("0:0:S"));
     }
+
+    @Test
+    void rover_faces_east_after_turning_left_three_times() {
+        assertThat(MarsRover.execute("LLL"), is("0:0:E"));
+    }
 }
 
 class MarsRover {
@@ -59,6 +64,8 @@ class MarsRover {
                     direction = 'W';
                 } else if (direction == 'W') {
                     direction = 'S';
+                } else if (direction == 'S') {
+                    direction = 'E';
                 }
             } else if (command == 'R') {
                 direction = 'E';
