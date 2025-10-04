@@ -100,9 +100,11 @@ public class MarsRoverTest {
     }
 }
 
+record Grid(int width, int height) {}
+
 record Position(int x, int y) {
-    public Position wrap(int gridSize) {
-        return new Position(mod(x, gridSize), mod(y, gridSize));
+    public Position wrap(Grid grid) {
+        return new Position(mod(x, grid.width()), mod(y, grid.height()));
     }
 
     private int mod(int a, int n) {
@@ -199,25 +201,25 @@ enum Direction {
 enum Command {
     MOVE {
         @Override
-        MarsRover execute(MarsRover marsRover) {
-            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(10);
+        MarsRover execute(MarsRover marsRover, Grid grid) {
+            Position wrappedPosition = marsRover.direction().move(marsRover.position()).wrap(grid);
             return new MarsRover(wrappedPosition, marsRover.direction());
         }
     },
     TURN_LEFT {
         @Override
-        MarsRover execute(MarsRover marsRover) {
+        MarsRover execute(MarsRover marsRover, Grid grid) {
             return new MarsRover(marsRover.position(), marsRover.direction().turnLeft());
         }
     },
     TURN_RIGHT {
         @Override
-        MarsRover execute(MarsRover marsRover) {
+        MarsRover execute(MarsRover marsRover, Grid grid) {
             return new MarsRover(marsRover.position(), marsRover.direction().turnRight());
         }
     };
 
-    abstract MarsRover execute(MarsRover marsRover);
+    abstract MarsRover execute(MarsRover marsRover, Grid grid);
 
     static Command fromChar(char c) {
         return switch (c) {
@@ -231,12 +233,14 @@ enum Command {
 
 class MarsRoverExecutor {
     public static String execute(String commands) {
+        Grid grid = new Grid(10, 10);
+
         return commands.chars()
                 .mapToObj(c -> Command.fromChar((char) c))
                 .toList()
                 .stream()
                 .reduce(new MarsRover(new Position(0, 0), Direction.NORTH),
-                        (rover, command) -> command.execute(rover),
+                        (rover, command) -> command.execute(rover, grid),
                         (rover1, rover2) -> rover2
                 ).asString();
     }
