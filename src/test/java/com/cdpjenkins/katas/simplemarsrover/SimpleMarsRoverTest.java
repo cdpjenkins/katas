@@ -100,42 +100,17 @@ public class SimpleMarsRoverTest {
     }
 }
 
+record Position(int x, int y) { }
+
 class MarsRover {
     public static String execute(String commands) {
         char direction = 'N';
-        int x = 0;
-        int y = 0;
+
+        Position position = new Position(0, 0);
 
         for (char command : commands.toCharArray()) {
             switch (command) {
-                case 'M' -> {
-                    switch (direction) {
-                        case 'N' -> {
-                            y++;
-                            if (y >= 10) {
-                                y = 0;
-                            }
-                        }
-                        case 'E' -> {
-                            x++;
-                            if (x >= 10) {
-                                x = 0;
-                            }
-                        }
-                        case 'S' -> {
-                            y--;
-                            if (y < 0) {
-                                y = 9;
-                            }
-                        }
-                        case 'W' -> {
-                            x--;
-                            if (x < 0) {
-                                x = 9;
-                            }
-                        }
-                    }
-                }
+                case 'M' -> position = move(position, direction);
                 case 'L' -> direction = switch (direction) {
                     case 'N' -> 'W';
                     case 'W' -> 'S';
@@ -153,6 +128,41 @@ class MarsRover {
             }
         }
 
-        return String.format("%d:%d:%c", x, y, direction);
+        return String.format("%d:%d:%c", position.x(), position.y(), direction);
+    }
+
+    private static Position move(Position position, char direction) {
+        int x = position.x();
+        int y = position.y();
+
+        switch (direction) {
+            case 'N' -> {
+                y++;
+                if (y >= 10) {
+                    y = 0;
+                }
+            }
+            case 'E' -> {
+                x++;
+                if (x >= 10) {
+                    x = 0;
+                }
+            }
+            case 'S' -> {
+                y--;
+                if (y < 0) {
+                    y = 9;
+                }
+            }
+            case 'W' -> {
+                x--;
+                if (x < 0) {
+                    x = 9;
+                }
+            }
+        }
+
+        position = new Position(x, y);
+        return position;
     }
 }
