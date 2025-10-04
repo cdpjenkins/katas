@@ -102,23 +102,42 @@ public class SimpleMarsRoverTest {
 
 record Position(int x, int y) { }
 
+
+enum Command {
+    MOVE,
+    TURN_LEFT,
+    TURN_RIGHT;
+
+    static Command fromChar(char c) {
+        return switch (c) {
+            case 'M' -> MOVE;
+            case 'L' -> TURN_LEFT;
+            case 'R' -> TURN_RIGHT;
+            default -> throw new IllegalArgumentException("Invalid command: " + c);
+        };
+    }
+}
+
 class MarsRover {
     public static String execute(String commands) {
         char direction = 'N';
 
         Position position = new Position(0, 0);
 
-        for (char command : commands.toCharArray()) {
+        for (char c : commands.toCharArray()) {
+
+            Command command = Command.fromChar(c);
+
             switch (command) {
-                case 'M' -> position = move(position, direction);
-                case 'L' -> direction = switch (direction) {
+                case MOVE -> position = move(position, direction);
+                case TURN_LEFT -> direction = switch (direction) {
                     case 'N' -> 'W';
                     case 'W' -> 'S';
                     case 'S' -> 'E';
                     case 'E' -> 'N';
                     default -> direction;
                 };
-                case 'R' -> direction = switch (direction) {
+                case TURN_RIGHT -> direction = switch (direction) {
                     case 'N' -> 'E';
                     case 'E' -> 'S';
                     case 'S' -> 'W';
