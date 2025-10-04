@@ -71,6 +71,11 @@ public class SimpleMarsRoverTest {
     void x_coord_is_incremented_by_1_when_we_move_east() {
         assertThat(MarsRover.execute("RM"), is("1:0:E"));
     }
+
+    @Test
+    void rover_wraps_around_when_we_reach_the_right_side_of_the_grid() {
+        assertThat(MarsRover.execute("RMMMMMMMMMM"), is("0:0:E"));
+    }
 }
 
 class MarsRover {
@@ -91,6 +96,9 @@ class MarsRover {
                     }
                     case 'E' -> {
                         x++;
+                        if (x >= 10) {
+                            x = 0;
+                        }
                     }
                 }
             } else if (command == 'L') {
