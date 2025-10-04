@@ -107,7 +107,7 @@ record Position(int x, int y) {
         return new Position(mod(x, grid.width()), mod(y, grid.height()));
     }
 
-    private int mod(int a, int n) {
+    private static int mod(int a, int n) {
         return ((a % n) + n) % n;
     }
 }
