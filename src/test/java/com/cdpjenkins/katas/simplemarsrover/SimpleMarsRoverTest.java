@@ -1,6 +1,8 @@
 package com.cdpjenkins.katas.simplemarsrover;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -85,6 +87,16 @@ public class SimpleMarsRoverTest {
     @Test
     void rover_can_move_west_and_wraps_around_when_we_reach_the_left_edge_of_the_grid() {
         assertThat(MarsRover.execute("LM"), is("9:0:W"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "MMRMMLM, 2:3:N",
+            "MMMMMMMMMM, 0:0:N",
+            "RMMLM, 2:1:N"
+    })
+    void rover_moves_correctly_when_given_more_complex_commands(String commands, String finalState) {
+        assertThat(MarsRover.execute(commands), is(finalState));
     }
 }
 
