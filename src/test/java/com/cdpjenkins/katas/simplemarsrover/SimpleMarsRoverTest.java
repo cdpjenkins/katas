@@ -107,44 +107,43 @@ class MarsRover {
         int y = 0;
 
         for (char command : commands.toCharArray()) {
-            if (command == 'M') {
-
-                switch (direction) {
-                    case 'N' -> {
-                        y++;
-                        if (y >= 10) {
-                            y = 0;
+            switch (command) {
+                case 'M' -> {
+                    switch (direction) {
+                        case 'N' -> {
+                            y++;
+                            if (y >= 10) {
+                                y = 0;
+                            }
                         }
-                    }
-                    case 'E' -> {
-                        x++;
-                        if (x >= 10) {
-                            x = 0;
+                        case 'E' -> {
+                            x++;
+                            if (x >= 10) {
+                                x = 0;
+                            }
                         }
-                    }
-                    case 'S' -> {
-                        y--;
-                        if (y < 0) {
-                            y = 9;
+                        case 'S' -> {
+                            y--;
+                            if (y < 0) {
+                                y = 9;
+                            }
                         }
-                    }
-                    case 'W' -> {
-                        x--;
-                        if (x < 0) {
-                            x = 9;
+                        case 'W' -> {
+                            x--;
+                            if (x < 0) {
+                                x = 9;
+                            }
                         }
                     }
                 }
-            } else if (command == 'L') {
-                direction = switch (direction) {
+                case 'L' -> direction = switch (direction) {
                     case 'N' -> 'W';
                     case 'W' -> 'S';
                     case 'S' -> 'E';
                     case 'E' -> 'N';
                     default -> direction;
                 };
-            } else if (command == 'R') {
-                direction = switch (direction) {
+                case 'R' -> direction = switch (direction) {
                     case 'N' -> 'E';
                     case 'E' -> 'S';
                     case 'S' -> 'W';
