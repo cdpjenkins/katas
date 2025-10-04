@@ -81,6 +81,11 @@ public class SimpleMarsRoverTest {
     void rover_can_move_south_and_wraps_around_when_we_reach_the_bottom_edge_of_the_grid() {
         assertThat(MarsRover.execute("LLM"), is("0:9:S"));
     }
+
+    @Test
+    void rover_can_move_west_and_wraps_around_when_we_reach_the_left_edge_of_the_grid() {
+        assertThat(MarsRover.execute("LM"), is("9:0:W"));
+    }
 }
 
 class MarsRover {
@@ -109,6 +114,12 @@ class MarsRover {
                         y--;
                         if (y < 0) {
                             y = 9;
+                        }
+                    }
+                    case 'W' -> {
+                        x--;
+                        if (x < 0) {
+                            x = 9;
                         }
                     }
                 }
