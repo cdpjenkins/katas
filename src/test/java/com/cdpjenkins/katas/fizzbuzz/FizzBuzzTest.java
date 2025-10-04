@@ -22,12 +22,19 @@ public class FizzBuzzTest {
     void converts_3_to_Fizz() {
         assertThat(fizzBuzz.convert(3), is("Fizz"));
     }
+
+    @Test
+    void converts_5_to_Buzz() {
+        assertThat(fizzBuzz.convert(5), is("Buzz"));
+    }
 }
 
 class FizzBuzz {
     public String convert(int number) {
         if (number == 3) {
             return "Fizz";
+        } else if (number == 5) {
+            return "Buzz";
         } else {
             return Integer.toString(number);
         }
