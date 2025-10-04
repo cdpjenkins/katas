@@ -46,9 +46,9 @@ public class FizzBuzzTest {
 
 class FizzBuzz {
     public String convert(int number) {
-        if (number < 1) {
-            throw new IllegalArgumentException("Input must be positive");
-        } else if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
+        mustBePositive(number);
+
+        if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
             return "FizzBuzz";
         } else if (isDivisibleBy(number, 3)) {
             return "Fizz";
@@ -57,6 +57,16 @@ class FizzBuzz {
         } else {
             return Integer.toString(number);
         }
+    }
+
+    private static void mustBePositive(int number) {
+        if (!isPositive(number)) {
+            throw new IllegalArgumentException("Input must be positive");
+        }
+    }
+
+    private static boolean isPositive(int number) {
+        return number >= 1;
     }
 
     private static boolean isDivisibleBy(int number, int factor) {
