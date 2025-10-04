@@ -102,6 +102,22 @@ public class SimpleMarsRoverTest {
 
 record MarsRover(int x, int y) { }
 
+enum Direction {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST;
+
+    char toChar() {
+        return switch (this) {
+            case NORTH -> 'N';
+            case EAST -> 'E';
+            case SOUTH -> 'S';
+            case WEST -> 'W';
+        };
+    }
+}
+
 enum Command {
     MOVE,
     TURN_LEFT,
@@ -119,7 +135,7 @@ enum Command {
 
 class MarsRoverExecutor {
     public static String execute(String commands) {
-        char direction = 'N';
+        Direction direction = Direction.NORTH;
 
         MarsRover marsRover = new MarsRover(0, 0);
 
@@ -130,49 +146,47 @@ class MarsRoverExecutor {
             switch (command) {
                 case MOVE -> marsRover = move(marsRover, direction);
                 case TURN_LEFT -> direction = switch (direction) {
-                    case 'N' -> 'W';
-                    case 'W' -> 'S';
-                    case 'S' -> 'E';
-                    case 'E' -> 'N';
-                    default -> direction;
+                    case Direction.NORTH -> Direction.WEST;
+                    case Direction.WEST  -> Direction.SOUTH;
+                    case Direction.SOUTH -> Direction.EAST;
+                    case Direction.EAST  -> Direction.NORTH;
                 };
                 case TURN_RIGHT -> direction = switch (direction) {
-                    case 'N' -> 'E';
-                    case 'E' -> 'S';
-                    case 'S' -> 'W';
-                    case 'W' -> 'N';
-                    default -> direction;
+                    case Direction.NORTH -> Direction.EAST;
+                    case Direction.EAST -> Direction.SOUTH;
+                    case Direction.SOUTH -> Direction.WEST;
+                    case Direction.WEST -> Direction.NORTH;
                 };
             }
         }
 
-        return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), direction);
+        return String.format("%d:%d:%c", marsRover.x(), marsRover.y(), direction.toChar());
     }
 
-    private static MarsRover move(MarsRover marsRover, char direction) {
+    private static MarsRover move(MarsRover marsRover, Direction direction) {
         int x = marsRover.x();
         int y = marsRover.y();
 
         switch (direction) {
-            case 'N' -> {
+            case NORTH -> {
                 y++;
                 if (y >= 10) {
                     y = 0;
                 }
             }
-            case 'E' -> {
+            case EAST -> {
                 x++;
                 if (x >= 10) {
                     x = 0;
                 }
             }
-            case 'S' -> {
+            case SOUTH -> {
                 y--;
                 if (y < 0) {
                     y = 9;
                 }
             }
-            case 'W' -> {
+            case WEST -> {
                 x--;
                 if (x < 0) {
                     x = 9;
