@@ -31,6 +31,11 @@ public class SimpleMarsRoverTest {
     void rover_direction_changes_when_it_turns_left() {
         assertThat(MarsRover.execute("L"), is("0:0:W"));
     }
+
+    @Test
+    void rover_direction_changes_when_it_turns_right() {
+        assertThat(MarsRover.execute("R"), is("0:0:E"));
+    }
 }
 
 class MarsRover {
@@ -44,8 +49,10 @@ class MarsRover {
                 if (y >= 10) {
                     y = 0;
                 }
-            } else {
+            } else if (command == 'L') {
                 direction = 'W';
+            } else if (command == 'R') {
+                direction = 'E';
             }
         }
 
