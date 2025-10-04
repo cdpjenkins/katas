@@ -37,16 +37,27 @@ public class FizzBuzzTest {
     void converts_10_to_Buzz() {
         assertThat(fizzBuzz.convert(10), is("Buzz"));
     }
+
+    @Test
+    void converts_15_to_FizzBuzz() {
+        assertThat(fizzBuzz.convert(15), is("FizzBuzz"));
+    }
 }
 
 class FizzBuzz {
     public String convert(int number) {
-        if (number % 3 == 0) {
+        if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
+            return "FizzBuzz";
+        } else if (isDivisibleBy(number, 3)) {
             return "Fizz";
-        } else if (number % 5 == 0) {
+        } else if (isDivisibleBy(number, 5)) {
             return "Buzz";
         } else {
             return Integer.toString(number);
         }
+    }
+
+    private static boolean isDivisibleBy(int number, int factor) {
+        return number % factor == 0;
     }
 }
