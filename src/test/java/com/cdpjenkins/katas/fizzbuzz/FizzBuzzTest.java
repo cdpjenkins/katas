@@ -45,17 +45,25 @@ public class FizzBuzzTest {
     }
 
     @Test
-    void throws_IllegalArguementException_when_input_is_not_positive() {
+    void throws_IllegalArguementException_when_input_is_zero() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> fizzBuzz.convert(0)
+        );
+    }
+
+    @Test
+    void throws_IllegalArguementException_when_input_is_negative() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> fizzBuzz.convert(-1)
         );
     }
 }
 
 class FizzBuzz {
     public String convert(int number) {
-        if (number == 0) {
+        if (number < 1) {
             throw new IllegalArgumentException("Input must be positive");
         } else if (isDivisibleBy(number, 3) && isDivisibleBy(number, 5)) {
             return "FizzBuzz";
