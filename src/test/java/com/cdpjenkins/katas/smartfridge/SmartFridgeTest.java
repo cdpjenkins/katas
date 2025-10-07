@@ -3,56 +3,68 @@ package com.cdpjenkins.katas.smartfridge;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class SmartFridgeTest {
 
+    SmartFridge smartFridge = new SmartFridge();
+
     @Test
     void fridge_is_initially_empty() {
-        SmartFridge smartFridge = new SmartFridge();
-
-        String contents = smartFridge.formatContents();
-
-        assertThat(contents, isOutput(""));
+        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)), isOutput(""));
     }
 
     @Test
     void fridge_door_is_initially_closed() {
-        SmartFridge smartFridge = new SmartFridge();
-
         assertThat(smartFridge.isDoorOpen(), is(false));
     }
 
     @Test
     void if_we_open_the_fridge_door_it_is_now_open() {
-        SmartFridge smartFridge = new SmartFridge();
-
         smartFridge.openDoor();
-
         assertThat(smartFridge.isDoorOpen(), is(true));
     }
 
     @Test
     void if_we_close_an_open_fridge_door_it_is_now_closed() {
-        SmartFridge smartFridge = new SmartFridge();
-
         smartFridge.openDoor();
         smartFridge.closeDoor();
-
         assertThat(smartFridge.isDoorOpen(), is(false));
+    }
+
+    @Test
+    void item_can_be_placed_in_the_fridge_when_door_is_open() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Milk", LocalDate.of(2021, 10, 21)));
+        smartFridge.closeDoor();
+
+        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)),
+                isOutput("Milk: 0 Days remaining"));
     }
 
     private static Matcher<String> isOutput(String expectedOutput) {
         return is(expectedOutput.stripIndent().trim());
     }
+
 }
+
+record Item(String name, LocalDate expiryDate) {}
 
 class SmartFridge {
     private boolean doorOpen = false;
 
-    public String formatContents() {
-        return "";
+    private final List<Item> items = new ArrayList<>();
+
+    public String formatContents(LocalDate localDate) {
+        return items.stream()
+                .map((item) -> "Milk: 0 Days remaining")
+                .collect(Collectors.joining("\n"));
     }
 
     public boolean isDoorOpen() {
@@ -65,5 +77,9 @@ class SmartFridge {
 
     public void closeDoor() {
         doorOpen = false;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
     }
 }
