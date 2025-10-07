@@ -24,17 +24,32 @@ public class SmartFridgeTest {
         assertThat(smartFridge.isDoorOpen(), is(false));
     }
 
+    @Test
+    void if_we_open_the_fridge_door_it_is_now_open() {
+        SmartFridge smartFridge = new SmartFridge();
+
+        smartFridge.openDoor();
+
+        assertThat(smartFridge.isDoorOpen(), is(true));
+    }
+
     private static Matcher<String> isOutput(String expectedOutput) {
         return is(expectedOutput.stripIndent().trim());
     }
 }
 
 class SmartFridge {
+    private boolean doorOpen = false;
+
     public String formatContents() {
         return "";
     }
 
     public boolean isDoorOpen() {
-        return false;
+        return doorOpen;
+    }
+
+    public void openDoor() {
+        doorOpen = true;
     }
 }
