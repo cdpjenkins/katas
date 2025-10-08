@@ -4,6 +4,7 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +46,17 @@ public class SmartFridgeTest {
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)),
-                isOutput("Milk: 0 Days remaining"));
+                isOutput("Milk: 0 days remaining"));
+    }
+
+    @Test
+    void the_days_remaining_is_reported_for_an_item_that_was_just_placed_in_the_fridge() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Milk", LocalDate.of(2021, 10, 22)));
+        smartFridge.closeDoor();
+
+        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)),
+                isOutput("Milk: 1 day remaining"));
     }
 
     private static Matcher<String> isOutput(String expectedOutput) {
@@ -61,10 +72,23 @@ class SmartFridge {
 
     private final List<Item> items = new ArrayList<>();
 
-    public String formatContents(LocalDate localDate) {
+    public String formatContents(LocalDate now) {
         return items.stream()
-                .map((item) -> "Milk: 0 Days remaining")
+                .map((item) -> daysRemaining(item, now))
                 .collect(Collectors.joining("\n"));
+    }
+
+    private static String daysRemaining(Item item, LocalDate now) {
+        Period periodBetween = Period.between(now, item.expiryDate());
+
+        if (periodBetween.isNegative()) {
+            throw new IllegalArgumentException("urgh need to handle this");
+        }
+
+        int numDays = periodBetween.getDays();
+        String dayOrDays = numDays == 1 ? "day" : "days";
+
+        return String.format("Milk: %d %s remaining", numDays, dayOrDays);
     }
 
     public boolean isDoorOpen() {
