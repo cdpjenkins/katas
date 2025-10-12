@@ -21,6 +21,7 @@ public class SmartFridgeTest {
     private static final LocalDate YESTERDAY = LocalDate.of(2021, 10, 20);
     private static final LocalDate TODAY = LocalDate.of(2021, 10, 21);
     private static final LocalDate TOMORROW = LocalDate.of(2021, 10, 22);
+    private static final LocalDate DAY_AFTER_TOMORROW = LocalDate.of(2021, 10, 23);
 
     @Test
     void fridge_is_initially_empty() {
@@ -77,20 +78,78 @@ public class SmartFridgeTest {
                 isOutput("EXPIRED: %s".formatted(itemName)));
     }
 
+    @Test
+    void opened_item_degrades_by_5_hours_every_time_fridge_is_opened_and_consequently_has_one_less_day_after_fridge_is_opened_once() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Milk", TOMORROW, Condition.OPENED));
+        smartFridge.closeDoor();
+
+        smartFridge.openDoor();
+        smartFridge.closeDoor();
+
+        assertThat(smartFridge.formatContents(TODAY),
+                isOutput("Milk: 0 days remaining"));
+    }
+
+    @Test
+    void opened_item_degrades_by_over_one_day_when_fridge_is_opened_five_times() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Milk", DAY_AFTER_TOMORROW, Condition.OPENED));
+        smartFridge.closeDoor();
+
+        repeat(5, () -> {
+                    smartFridge.openDoor();
+                    smartFridge.closeDoor();
+                });
+
+        assertThat(smartFridge.formatContents(TODAY),
+                isOutput("Milk: 0 days remaining"));
+    }
+
+    @Test
+    void sealed_item_degrades_by_1_hour_every_time_fridge_is_opened_and_consequently_has_one_less_day_after_fridge_is_opened_once() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Cheese", TOMORROW, Condition.SEALED));
+        smartFridge.closeDoor();
+
+        smartFridge.openDoor();
+        smartFridge.closeDoor();
+
+        assertThat(smartFridge.formatContents(TODAY),
+                isOutput("Cheese: 0 days remaining"));
+    }
+
+    @Test
+    void sealed_item_degrades_by_1_day_when_fridge_is_opened_24_times() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Cheese", TOMORROW, Condition.SEALED));
+        smartFridge.closeDoor();
+
+        repeat(24, () -> {
+            smartFridge.openDoor();
+            smartFridge.closeDoor();
+        });
+
+        assertThat(smartFridge.formatContents(TODAY),
+                isOutput("Cheese: 0 days remaining"));
+    }
+
     private static Matcher<String> isOutput(String expectedOutput) {
         return is(expectedOutput.stripIndent().trim());
     }
-}
 
-enum Condition {
-    SEALED, OPENED
+    private static void repeat(int n, Runnable action) {
+        for (int i = 0; i < n; i++) {
+            action.run();
+        }
+    }
+
 }
-record Item(String name, LocalDate expiryDate, Condition condition) {}
 
 class SmartFridge {
     private boolean doorOpen = false;
 
-    private final List<Item> items = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 
     public String formatContents(LocalDate now) {
         return items.stream()
@@ -99,7 +158,13 @@ class SmartFridge {
     }
 
     private static String daysRemaining(Item item, LocalDate now) {
-        Period periodBetween = Period.between(now, item.expiryDate());
+        LocalDate expiryDateWithDegradation =
+                item.expiryDate()
+                        .atStartOfDay()
+                        .minusHours(item.hoursDegraded())
+                        .toLocalDate();
+
+        Period periodBetween = Period.between(now, expiryDateWithDegradation);
 
         if (periodBetween.isNegative()) {
             return "EXPIRED: %s".formatted(item.name());
@@ -117,6 +182,9 @@ class SmartFridge {
 
     public void openDoor() {
         doorOpen = true;
+
+        List<Item> degradedItems = items.stream().map(Item::degrade).toList();
+        this.items = new ArrayList<>(degradedItems);
     }
 
     public void closeDoor() {
