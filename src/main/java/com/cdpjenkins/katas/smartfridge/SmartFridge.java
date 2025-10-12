@@ -18,13 +18,8 @@ class SmartFridge {
     }
 
     private static String daysRemaining(Item item, LocalDate now) {
-        LocalDate expiryDateWithDegradation =
-                item.expiryDate()
-                        .atStartOfDay()
-                        .minusHours(item.hoursDegraded())
-                        .toLocalDate();
 
-        Period periodBetween = Period.between(now, expiryDateWithDegradation);
+        Period periodBetween = Period.between(now, item.expiryDate().toLocalDate());
 
         if (periodBetween.isNegative()) {
             return "EXPIRED: %s".formatted(item.name());

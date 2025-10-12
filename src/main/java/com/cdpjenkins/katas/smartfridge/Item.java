@@ -1,11 +1,12 @@
 package com.cdpjenkins.katas.smartfridge;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record Item(String name, LocalDate expiryDate, Condition condition, int hoursDegraded) {
+public record Item(String name, LocalDateTime expiryDate, Condition condition) {
 
     public Item(String name, LocalDate expiryDate, Condition condition) {
-        this(name, expiryDate, condition, 0);
+        this(name, expiryDate.atStartOfDay(), condition);
     }
 
     public Item degrade() {
@@ -16,9 +17,8 @@ public record Item(String name, LocalDate expiryDate, Condition condition, int h
 
         return new Item(
                 this.name,
-                this.expiryDate,
-                this.condition,
-                this.hoursDegraded + hoursTodegrade
+                this.expiryDate.minusHours(hoursTodegrade),
+                this.condition
         );
     }
 }
