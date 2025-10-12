@@ -10,8 +10,8 @@ public record Item(String name, LocalDate expiryDate, Condition condition, int h
 
     public Item degrade() {
         int hoursTodegrade = switch (condition) {
-            case SEALED -> 1;
-            case OPENED -> 5;
+            case Condition.SEALED -> 1;
+            case Condition.OPENED -> 5;
         };
 
         return new Item(
