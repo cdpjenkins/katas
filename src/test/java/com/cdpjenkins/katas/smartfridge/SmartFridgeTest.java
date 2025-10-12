@@ -16,8 +16,9 @@ public class SmartFridgeTest {
 
     SmartFridge smartFridge = new SmartFridge();
 
-    private static final LocalDate TOMORROW = LocalDate.of(2021, 10, 22);
+    private static final LocalDate YESTERDAY = LocalDate.of(2021, 10, 20);
     private static final LocalDate TODAY = LocalDate.of(2021, 10, 21);
+    private static final LocalDate TOMORROW = LocalDate.of(2021, 10, 22);
 
     @Test
     void fridge_is_initially_empty() {
@@ -62,6 +63,16 @@ public class SmartFridgeTest {
                 isOutput("Milk: 1 day remaining"));
     }
 
+    @Test
+    void the_days_remaining_is_reported_for_an_expired_item_that_was_just_placed_in_the_fridge() {
+        smartFridge.openDoor();
+        smartFridge.addItem(new Item("Milk", YESTERDAY));
+        smartFridge.closeDoor();
+
+        assertThat(smartFridge.formatContents(TODAY),
+                isOutput("EXPIRED: Milk"));
+    }
+
     private static Matcher<String> isOutput(String expectedOutput) {
         return is(expectedOutput.stripIndent().trim());
     }
@@ -84,7 +95,7 @@ class SmartFridge {
         Period periodBetween = Period.between(now, item.expiryDate());
 
         if (periodBetween.isNegative()) {
-            throw new IllegalArgumentException("urgh need to handle this");
+            return String.format("EXPIRED: Milk");
         }
 
         int numDays = periodBetween.getDays();
