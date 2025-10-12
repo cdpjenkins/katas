@@ -16,9 +16,12 @@ public class SmartFridgeTest {
 
     SmartFridge smartFridge = new SmartFridge();
 
+    private static final LocalDate TOMORROW = LocalDate.of(2021, 10, 22);
+    private static final LocalDate TODAY = LocalDate.of(2021, 10, 21);
+
     @Test
     void fridge_is_initially_empty() {
-        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)), isOutput(""));
+        assertThat(smartFridge.formatContents(TODAY), isOutput(""));
     }
 
     @Test
@@ -42,27 +45,26 @@ public class SmartFridgeTest {
     @Test
     void item_can_be_placed_in_the_fridge_when_door_is_open() {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item("Milk", LocalDate.of(2021, 10, 21)));
+        smartFridge.addItem(new Item("Milk", TODAY));
         smartFridge.closeDoor();
 
-        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)),
+        assertThat(smartFridge.formatContents(TODAY),
                 isOutput("Milk: 0 days remaining"));
     }
 
     @Test
     void the_days_remaining_is_reported_for_an_item_that_was_just_placed_in_the_fridge() {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item("Milk", LocalDate.of(2021, 10, 22)));
+        smartFridge.addItem(new Item("Milk", TOMORROW));
         smartFridge.closeDoor();
 
-        assertThat(smartFridge.formatContents(LocalDate.of(2021, 10, 21)),
+        assertThat(smartFridge.formatContents(TODAY),
                 isOutput("Milk: 1 day remaining"));
     }
 
     private static Matcher<String> isOutput(String expectedOutput) {
         return is(expectedOutput.stripIndent().trim());
     }
-
 }
 
 record Item(String name, LocalDate expiryDate) {}
