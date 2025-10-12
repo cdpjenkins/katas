@@ -48,7 +48,7 @@ public class SmartFridgeTest {
     @Test
     void item_can_be_placed_in_the_fridge_when_door_is_open() {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item("Milk", TODAY));
+        smartFridge.addItem(new Item("Milk", TODAY, Condition.SEALED));
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
@@ -59,7 +59,7 @@ public class SmartFridgeTest {
     @CsvSource({"Milk", "Cheese"})
     void the_days_remaining_is_reported_for_an_item_that_was_just_placed_in_the_fridge(String itemName) {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item(itemName, TOMORROW));
+        smartFridge.addItem(new Item(itemName, TOMORROW, Condition.SEALED));
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
@@ -70,7 +70,7 @@ public class SmartFridgeTest {
     @CsvSource({"Milk", "Cheese"})
     void the_days_remaining_is_reported_for_an_expired_item_that_was_just_placed_in_the_fridge(String itemName) {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item(itemName, YESTERDAY));
+        smartFridge.addItem(new Item(itemName, YESTERDAY, Condition.SEALED));
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
@@ -82,7 +82,10 @@ public class SmartFridgeTest {
     }
 }
 
-record Item(String name, LocalDate expiryDate) {}
+enum Condition {
+    SEALED, OPENED
+}
+record Item(String name, LocalDate expiryDate, Condition condition) {}
 
 class SmartFridge {
     private boolean doorOpen = false;
