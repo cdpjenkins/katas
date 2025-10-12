@@ -2,6 +2,8 @@ package com.cdpjenkins.katas.smartfridge;
 
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -53,24 +55,26 @@ public class SmartFridgeTest {
                 isOutput("Milk: 0 days remaining"));
     }
 
-    @Test
-    void the_days_remaining_is_reported_for_an_item_that_was_just_placed_in_the_fridge() {
+    @ParameterizedTest
+    @CsvSource({"Milk", "Cheese"})
+    void the_days_remaining_is_reported_for_an_item_that_was_just_placed_in_the_fridge(String itemName) {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item("Milk", TOMORROW));
+        smartFridge.addItem(new Item(itemName, TOMORROW));
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
-                isOutput("Milk: 1 day remaining"));
+                isOutput(itemName + ": 1 day remaining"));
     }
 
-    @Test
-    void the_days_remaining_is_reported_for_an_expired_item_that_was_just_placed_in_the_fridge() {
+    @ParameterizedTest
+    @CsvSource({"Milk", "Cheese"})
+    void the_days_remaining_is_reported_for_an_expired_item_that_was_just_placed_in_the_fridge(String itemName) {
         smartFridge.openDoor();
-        smartFridge.addItem(new Item("Milk", YESTERDAY));
+        smartFridge.addItem(new Item(itemName, YESTERDAY));
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
-                isOutput("EXPIRED: Milk"));
+                isOutput("EXPIRED: " + itemName));
     }
 
     private static Matcher<String> isOutput(String expectedOutput) {
@@ -95,13 +99,13 @@ class SmartFridge {
         Period periodBetween = Period.between(now, item.expiryDate());
 
         if (periodBetween.isNegative()) {
-            return String.format("EXPIRED: Milk");
+            return String.format("EXPIRED: " + item.name());
         }
 
         int numDays = periodBetween.getDays();
         String dayOrDays = numDays == 1 ? "day" : "days";
 
-        return String.format("Milk: %d %s remaining", numDays, dayOrDays);
+        return String.format(item.name() + ": %d %s remaining", numDays, dayOrDays);
     }
 
     public boolean isDoorOpen() {
