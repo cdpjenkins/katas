@@ -74,7 +74,7 @@ public class SmartFridgeTest {
         smartFridge.closeDoor();
 
         assertThat(smartFridge.formatContents(TODAY),
-                isOutput("EXPIRED: " + itemName));
+                isOutput("EXPIRED: %s".formatted(itemName)));
     }
 
     private static Matcher<String> isOutput(String expectedOutput) {
@@ -99,13 +99,13 @@ class SmartFridge {
         Period periodBetween = Period.between(now, item.expiryDate());
 
         if (periodBetween.isNegative()) {
-            return String.format("EXPIRED: " + item.name());
+            return "EXPIRED: %s".formatted(item.name());
         }
 
         int numDays = periodBetween.getDays();
         String dayOrDays = numDays == 1 ? "day" : "days";
 
-        return String.format(item.name() + ": %d %s remaining", numDays, dayOrDays);
+        return "%s: %d %s remaining".formatted(item.name(), numDays, dayOrDays);
     }
 
     public boolean isDoorOpen() {
