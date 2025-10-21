@@ -45,7 +45,7 @@ Step 4. check if the implementation needs any refactoring
 - prefer outside-in testing to keep the code easier to refactor later
 
 # Commits
-- Write commit messges that match conventional commits.
+- Write commit messages that match conventional commits.
 
 # Architecture
 
