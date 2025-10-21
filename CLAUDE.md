@@ -44,6 +44,8 @@ Step 4. check if the implementation needs any refactoring
 - After every refactoring step, ALWAYS immediately run tests to verify the changes preserve existing behavior. NEVER consider a refactoring complete until all tests pass.
 - prefer outside-in testing to keep the code easier to refactor later
 
+# Commits
+- Write commit messges that match conventional commits.
 
 # Architecture
 
