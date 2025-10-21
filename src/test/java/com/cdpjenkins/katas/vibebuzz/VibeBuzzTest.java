@@ -26,4 +26,11 @@ public class VibeBuzzTest {
 
         assertThat(vibeBuzz.vibeBuzz(3), is("Buzz"));
     }
+
+    @Test
+    void should_return_vibebuzz_for_integer_divisible_by_both_2_and_3() {
+        VibeBuzz vibeBuzz = new VibeBuzz();
+
+        assertThat(vibeBuzz.vibeBuzz(6), is("VibeBuzz"));
+    }
 }
