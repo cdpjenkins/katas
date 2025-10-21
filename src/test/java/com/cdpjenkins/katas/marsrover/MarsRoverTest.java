@@ -1,4 +1,4 @@
-package com.cdpjenkins.katas.simplemarsrover;
+package com.cdpjenkins.katas.marsrover;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
