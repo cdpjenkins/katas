@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class VibeBuzzTest {
     @Test
@@ -32,5 +33,19 @@ public class VibeBuzzTest {
         VibeBuzz vibeBuzz = new VibeBuzz();
 
         assertThat(vibeBuzz.vibeBuzz(6), is("VibeBuzz"));
+    }
+
+    @Test
+    void should_throw_exception_for_zero() {
+        VibeBuzz vibeBuzz = new VibeBuzz();
+
+        assertThrows(IllegalArgumentException.class, () -> vibeBuzz.vibeBuzz(0));
+    }
+
+    @Test
+    void should_throw_exception_for_negative_number() {
+        VibeBuzz vibeBuzz = new VibeBuzz();
+
+        assertThrows(IllegalArgumentException.class, () -> vibeBuzz.vibeBuzz(-1));
     }
 }
