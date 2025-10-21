@@ -7,21 +7,21 @@ import static org.hamcrest.Matchers.is;
 
 public class VibeBuzzTest {
     @Test
-    void shouldReturnStringRepresentationOfPositiveInteger() {
+    void should_return_string_representation_of_positive_integer() {
         VibeBuzz vibeBuzz = new VibeBuzz();
 
         assertThat(vibeBuzz.vibeBuzz(1), is("1"));
     }
 
     @Test
-    void shouldReturnVibeForIntegerDivisibleBy2() {
+    void should_return_vibe_for_integer_divisible_by_2() {
         VibeBuzz vibeBuzz = new VibeBuzz();
 
         assertThat(vibeBuzz.vibeBuzz(2), is("Vibe"));
     }
 
     @Test
-    void shouldReturnBuzzForIntegerDivisibleBy3() {
+    void should_return_buzz_for_integer_divisible_by_3() {
         VibeBuzz vibeBuzz = new VibeBuzz();
 
         assertThat(vibeBuzz.vibeBuzz(3), is("Buzz"));
